@@ -1,0 +1,5 @@
+# Configure, compile, and run tic-tac-toe-bot from the repository root.
+
+cmake -S . -B build -DCMAKE_CXX_COMPILER=g++
+cmake --build build
+./build/tic-tac-toe-bot
