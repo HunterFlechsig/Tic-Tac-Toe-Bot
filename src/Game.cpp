@@ -1,8 +1,8 @@
 #include "Game.h"
 
-#include <exception>
 #include <iostream>
-#include <string>
+#include <limits>
+#include <vector>
 
 namespace {
 
@@ -23,20 +23,27 @@ void Game::printBoard() {
 }
 
 bool Game::isGameOver() {
-    return board.isBoardFull();
+    return board.isBoardFull() || checkPlayerWin('X') || checkPlayerWin('O');
 }
 
 bool Game::playMove(int index) {
-    try {
+    int row;
+    int column;
+    numberToRowCol(index, row, column);
+    return board.makeMove(row, column, currentPlayer);
+}
+
+std::vector<int> Game::legalMoves() const {
+    std::vector<int> moves;
+    for (int index = 0; index < 9; index++) {
         int row;
         int column;
         numberToRowCol(index, row, column);
-        board.makeMove(row, column, currentPlayer);
-    } catch (const std::exception& e) {
-        std::cout << e.what() << std::endl;
-        return false;
+        if (board.getCell(row, column) == ' ') {
+            moves.push_back(index);
+        }
     }
-    return true;
+    return moves;
 }
 
 void Game::switchPlayer() {
@@ -63,46 +70,45 @@ bool Game::checkPlayerWin(char player) {
     return false;
 }
 
-std::string Game::checkWinner() {
-    bool x = checkPlayerWin('X');
-    bool o = checkPlayerWin('O');
-
-    Outcome out = Outcome::Ywin;
-
-    if(!x && !o) {
-        out = Outcome::Tie;
+Game::Outcome Game::checkWinner() {
+    if (checkPlayerWin('X')) {
+        return Outcome::Xwin;
     }
-
-    if(x) {
-        out = Outcome::Xwin;
+    if (checkPlayerWin('O')) {
+        return Outcome::Owin;
     }
-
-    return outcomeMessages[static_cast<int>(out)];    
+    return Outcome::Tie;
 }
 
 int Game::getPlayerMove() {
-    int index;
-
-    std::cout << "Enter position [0-8]: ";
-    std::cin >> index;
-
-    return index;
+    while (true) {
+        std::cout << "Enter position [0-8]: ";
+        int index;
+        if (!(std::cin >> index)) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid move. Please try again." << std::endl;
+            continue;
+        }
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (index < 0 || index > 8) {
+            std::cout << "Invalid move. Please try again." << std::endl;
+            continue;
+        }
+        return index;
+    }
 }
 
-
 void Game::run() {
-    while(!isGameOver()) {
-        while(true) {
-            printBoard();
-            int index = getPlayerMove();
-            bool allowed = playMove(index);
-            if(allowed) break;
-        }
-        if(checkPlayerWin(currentPlayer)) {
-            break;
+    while (!isGameOver()) {
+        printBoard();
+        int index = getPlayerMove();
+        if (!playMove(index)) {
+            std::cout << "Invalid move. Please try again." << std::endl;
+            continue;
         }
         switchPlayer();
     }
     printBoard();
-    std::cout << checkWinner() << std::endl;
+    std::cout << outcomeMessages[static_cast<int>(checkWinner())] << std::endl;
 }

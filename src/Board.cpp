@@ -31,17 +31,16 @@ bool Board::isBoardFull() {
     return playedMoves == 9;
 }
 
-void Board::makeMove(int row, int column, char player) {
+bool Board::makeMove(int row, int column, char player) {
     if (row < 0 || row >= 3 || column < 0 || column >= 3) {
-        std::cout << "Invalid move. Please try again." << std::endl;
-        return;
+        return false;
     }
     if (board[row][column] != ' ') {
-        std::cout << "Cell already occupied. Please try again." << std::endl;
-        return;
+        return false;
     }
     board[row][column] = player;
     playedMoves++;
+    return true;
 }
 
 char Board::getCell(int row, int column) const {

@@ -3,6 +3,7 @@
 #include "Board.h"
 
 #include <string>
+#include <vector>
 
 class Game {
     private:
@@ -20,10 +21,10 @@ class Game {
             {2, 4, 6}
         };
 
-        enum class Outcome { Xwin, Ywin, Tie };
+        enum class Outcome { Xwin, Owin, Tie };
 
         static inline const std::string outcomeMessages[] = {
-            "X wins!", "Y wins!", "Tie!"
+            "X wins!", "O wins!", "Tie!"
         };
 
         void printBoard();
@@ -32,9 +33,10 @@ class Game {
         int getPlayerMove();
         void switchPlayer();
         bool checkPlayerWin(char player);
-        std::string checkWinner();
+        Outcome checkWinner();
 
     public:
         Game();
+        std::vector<int> legalMoves() const;
         void run();
 };

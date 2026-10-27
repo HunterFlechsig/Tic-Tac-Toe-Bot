@@ -10,6 +10,6 @@ class Board {
         Board();
         void printBoard();
         bool isBoardFull();
-        void makeMove(int row, int column, char player);
+        bool makeMove(int row, int column, char player);
         char getCell(int row, int column) const;
 };
