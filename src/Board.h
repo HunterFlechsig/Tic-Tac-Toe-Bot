@@ -2,7 +2,7 @@
 
 class Board {
     private:
-        char board[3][3];
+        char board[9];
         int playedMoves = 0;
         void initializeBoard();
 
@@ -10,6 +10,6 @@ class Board {
         Board();
         void printBoard();
         bool isBoardFull();
-        bool makeMove(int row, int column, char player);
-        char getCell(int row, int column) const;
+        bool makeMove(int index, char player);
+        char getCell(int index) const;
 };

@@ -4,15 +4,6 @@
 #include <limits>
 #include <vector>
 
-namespace {
-
-    void numberToRowCol(int number, int& row, int& column) {
-        constexpr int columnsPerRow = 3;
-        row = number / columnsPerRow;
-        column = number % columnsPerRow;
-    }
-
-}
 
 Game::Game() {
     currentPlayer = 'X';
@@ -27,19 +18,13 @@ bool Game::isGameOver() {
 }
 
 bool Game::playMove(int index) {
-    int row;
-    int column;
-    numberToRowCol(index, row, column);
-    return board.makeMove(row, column, currentPlayer);
+    return board.makeMove(index, currentPlayer);
 }
 
 std::vector<int> Game::legalMoves() const {
     std::vector<int> moves;
     for (int index = 0; index < 9; index++) {
-        int row;
-        int column;
-        numberToRowCol(index, row, column);
-        if (board.getCell(row, column) == ' ') {
+        if (board.getCell(index) == ' ') {
             moves.push_back(index);
         }
     }
@@ -51,19 +36,10 @@ void Game::switchPlayer() {
 }
 
 bool Game::checkPlayerWin(char player) {
-    for (int line = 0; line < 8; line++) {
-        bool won = true;
-        for (int cell = 0; cell < 3; cell++) {
-            int index = winIndexes[line][cell];
-            int row;
-            int column;
-            numberToRowCol(index, row, column);
-            if (board.getCell(row, column) != player) {
-                won = false;
-                break;
-            }
-        }
-        if (won) {
+    for (int[3] winLine : winLines) {
+        if (board.getCell(winLine[0]) == player &&
+            board.getCell(winLine[1]) == player &&
+            board.getCell(winLine[2]) == player) {
             return true;
         }
     }

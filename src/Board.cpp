@@ -3,10 +3,8 @@
 #include <iostream>
 
 void Board::initializeBoard() {
-    for (int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) {
-            board[i][j] = ' ';
-        }
+    for (int i = 0; i < 9; i++) {
+        board[i] = ' ';
     }
 }
 
@@ -20,7 +18,7 @@ void Board::printBoard() {
     for (int i = 0; i < 3; i++) {
         std::cout << "|";
         for (int j = 0; j < 3; j++) {
-            std::cout << " " << board[i][j] << " |";
+            std::cout << " " << board[i * 3 + j] << " |";
         }
         std::cout << std::endl;
         std::cout << horizontal << std::endl;
@@ -31,18 +29,18 @@ bool Board::isBoardFull() {
     return playedMoves == 9;
 }
 
-bool Board::makeMove(int row, int column, char player) {
-    if (row < 0 || row >= 3 || column < 0 || column >= 3) {
+bool Board::makeMove(int index, char player) {
+    if (index < 0 || index >= 9) {
         return false;
     }
-    if (board[row][column] != ' ') {
+    if (board[index] != ' ') {
         return false;
     }
-    board[row][column] = player;
+    board[index] = player;
     playedMoves++;
     return true;
 }
 
-char Board::getCell(int row, int column) const {
-    return board[row][column];
+char Board::getCell(int index) const {
+    return board[index];
 }
