@@ -1,0 +1,51 @@
+cmake_minimum_required(VERSION 3.14)
+project(TicTacToe)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Game library
+add_library(tictactoe_lib
+    src/Board.cpp
+    src/Game.cpp
+    src/GameState.cpp
+    src/Player.cpp
+)
+
+target_include_directories(tictactoe_lib PUBLIC include)
+
+# Main executable
+add_executable(tictactoe
+    src/main.cpp
+)
+
+target_link_libraries(tictactoe PRIVATE tictactoe_lib)
+
+# GoogleTest
+include(FetchContent)
+
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG v1.17.0
+)
+
+FetchContent_MakeAvailable(googletest)
+
+# Tests
+enable_testing()
+
+add_executable(tests
+    tests/BoardTest.cpp
+    tests/GameStateTest.cpp
+    tests/PlayerTest.cpp
+)
+
+target_link_libraries(tests
+    PRIVATE
+    tictactoe_lib
+    GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(tests)
