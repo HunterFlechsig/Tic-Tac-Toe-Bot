@@ -1,32 +1,29 @@
 #include "GameState.hpp"
 
 
-GameState::GameState(Board& board, Marker current_mark) {
-    this->board = board;
+GameState::GameState(Marker current_mark) {
     this->currentTurn = current_mark;
 }
 
 void GameState::switchPlayer() {
     currentTurn = (currentTurn == Marker::X)
-        ? Marker::X : Marker::O;
+        ? Marker::O : Marker::X;
 }
 
-std::optional<GameState> GameState::afterMove(int index) const {
-    GameState newState = *this;
-
-    if(!newState.board.place(index, currentTurn)) {
-        return std::nullopt;
+bool GameState::makeMove(int index) {
+    if(!board.place(index, currentTurn)) {
+        return false;
     }
 
-    newState.switchPlayer();
-    return newState;
+    switchPlayer();
+    return true;
 }
 
-bool GameState::isTerminal(){
+bool GameState::isTerminal() const {
     return  board.isFull() || winner().has_value();
 }
 
-bool GameState::checkWinner(Marker mark) {
+bool GameState::checkWinner(Marker mark) const {
     static int winIndexes[8][3] = {
             {0, 1, 2},
             {3, 4, 5},
@@ -48,7 +45,7 @@ bool GameState::checkWinner(Marker mark) {
     return false;
 }
 
-std::optional<Marker> GameState::winner() {
+std::optional<Marker> GameState::winner() const {
     if(checkWinner(Marker::X)) {
         return Marker::X;
     }
@@ -60,4 +57,21 @@ std::optional<Marker> GameState::winner() {
     return std::nullopt;
 }
 
+Marker GameState::getCurrentTurn() const {
+    return currentTurn;
+}
 
+std::vector<int> GameState::legalMoves() const {
+    std::vector<int> moves;
+
+    for(int i = 0; i < 9; i++) {
+        if(board.getCell(i) == Marker::Empty) {
+            moves.push_back(i);
+        }
+    }
+    return moves;
+}
+
+const Board& GameState::getBoard() const {
+    return board;
+}

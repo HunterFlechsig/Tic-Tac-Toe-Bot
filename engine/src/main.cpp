@@ -1,14 +1,16 @@
-// #include "Board.h"
-// #include "Game.h"
-
+#include "Game.hpp"
 #include <iostream>
+using namespace std;
 
+int main(int argc, char *argv[]) {
+    int i = 0;
+    while (i < argc) {
+        cout << "Argument " << i + 1 << ": " << argv[i]
+             << endl;
+        i++;
+    }
 
-int main() {
-    std::cout << "Hello from tic-tac-toe-bot.\n";
-
-    // Game game{};
-    // game.run();
-
-    // return 0;
+    Game game{};
+    game.run();
+    return 0;
 }

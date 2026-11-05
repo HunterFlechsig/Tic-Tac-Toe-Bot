@@ -1,33 +1,20 @@
 #pragma once
 
+#include "GameState.hpp"
 #include "Board.hpp"
-
-#include <string>
-#include <vector>
+#include "Player.hpp"
+#include <memory>
+#include <array>
 
 class Game {
     private:
-        Board board;
-        char currentPlayer;
-
-        
-
-        enum class Outcome { Xwin, Owin, Tie };
-
-        static inline const std::string outcomeMessages[] = {
-            "X wins!", "O wins!", "Tie!"
+        std::array<std::unique_ptr<Player>, 2> players {
+            std::make_unique<MinimaxPlayer>(Marker::X, false, false),
+            std::make_unique<RandomPlayer>(Marker::O)
         };
-
-        void printBoard();
-        bool isGameOver();
-        bool playMove(int index);
-        int getPlayerMove();
-        void switchPlayer();
-        bool checkPlayerWin(char player);
-        Outcome checkWinner();
+        GameState state{players[0]->getMarker()};
 
     public:
-        Game();
-        std::vector<int> legalMoves() const;
         void run();
+        const Player& currentPlayer() const;
 };

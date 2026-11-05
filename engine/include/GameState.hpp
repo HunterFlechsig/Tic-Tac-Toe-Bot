@@ -3,28 +3,21 @@
 #include "Board.hpp"
 #include "Marker.hpp"
 #include <optional>
+#include <vector>
 
 class GameState {
     private:       
-        Board board;
         Marker currentTurn = Marker::X;
-        bool checkWinner(Marker mark);
-
-        static constexpr int winIndexes[8][3] = {
-            {0, 1, 2},
-            {3, 4, 5},
-            {6, 7, 8},
-            {0, 3, 6},
-            {1, 4, 7},
-            {2, 5, 8},
-            {0, 4, 8},
-            {2, 4, 6}
-        };
+        Board board;
+        bool checkWinner(Marker mark) const;
 
     public: 
-        GameState(Board& board, Marker current_mark);
-        std::optional<GameState> afterMove(int index) const;
+        GameState(Marker current_mark);
+        bool makeMove(int index);
         void switchPlayer();
-        bool isTerminal();
-        std::optional<Marker> winner();
+        bool isTerminal() const;
+        Marker getCurrentTurn() const;
+        std::optional<Marker> winner() const;     
+        const Board& getBoard() const;
+        std::vector<int> legalMoves() const;
 };
