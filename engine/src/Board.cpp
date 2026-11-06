@@ -42,7 +42,10 @@ bool Board::place(int index, Marker player) {
     return true;
 }
 
-// return mark at given index
+// Return the mark at index, or Empty when index is outside the board.
 Marker Board::getCell(int index) const {
+    if (index < 0 || index >= 9) {
+        return Marker::Empty;
+    }
     return board[index];
 }

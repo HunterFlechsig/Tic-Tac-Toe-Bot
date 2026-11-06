@@ -2,6 +2,9 @@
 
 #include "GameState.hpp"
 
+#include <cstdint>
+#include <random>
+
 class Player {
     protected:
         Marker marker;
@@ -33,13 +36,14 @@ private:
 
 class RandomPlayer : public Player {
 public:
-    explicit RandomPlayer(Marker marker)
-        : Player(marker) {}
+    explicit RandomPlayer(Marker marker);
+    explicit RandomPlayer(Marker marker, std::uint32_t seed);
 
     int getMove(const GameState& state) const override;
 
 private:
     int getInput(const GameState& state);
+    mutable std::mt19937 generator;
 };
 
 class MinimaxPlayer : public Player {
@@ -51,8 +55,11 @@ public:
         : Player(marker), prune(prune), useDepth(useDepth) {}
 
     int getMove(const GameState& state) const override;
+    int nodesExplored() const { return nodesExplored_; }
 
 private:
     int bestMove(const GameState& state) const;
     int minimax(const GameState& state, int alpha, int beta, int& nodes, bool prune,  int depth) const;
+
+    mutable int nodesExplored_ = 0;
 };

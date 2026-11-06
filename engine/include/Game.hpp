@@ -9,8 +9,8 @@
 class Game {
     private:
         std::array<std::unique_ptr<Player>, 2> players {
-            std::make_unique<MinimaxPlayer>(Marker::X, false, false),
-            std::make_unique<RandomPlayer>(Marker::O)
+            std::make_unique<MinimaxPlayer>(Marker::X, true, true),
+            std::make_unique<HumanPlayer>(Marker::O)
         };
         GameState state{players[0]->getMarker()};
 

@@ -6,7 +6,6 @@
 class Board {
     private:
         std::array<Marker, 9> board;
-        int playedMoves = 0;
 
     public:
         Board();

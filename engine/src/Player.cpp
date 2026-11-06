@@ -5,13 +5,21 @@
 #include <algorithm>
 #include <print>
 
+RandomPlayer::RandomPlayer(Marker marker)
+    : Player(marker), generator(std::random_device{}()) {}
+
+RandomPlayer::RandomPlayer(Marker marker, std::uint32_t seed)
+    : Player(marker), generator(seed) {}
+
 int RandomPlayer::getMove(const GameState& state) const {
     auto legal_moves = state.legalMoves();
-    std::random_device rd;
-    std::mt19937 gen(rd());
+    if (legal_moves.empty()) {
+        return -1;
+    }
 
-    std::uniform_int_distribution<> distr(0, legal_moves.size()-1);
-    return legal_moves[distr(gen)];
+    std::uniform_int_distribution<int> distr(
+        0, static_cast<int>(legal_moves.size()) - 1);
+    return legal_moves[distr(generator)];
 }
 
 int HumanPlayer::getMove(const GameState& state) const {
@@ -58,6 +66,7 @@ int MinimaxPlayer::bestMove(const GameState& state) const {
         }
     }
 
+    nodesExplored_ = nodes_explored;
     std::println("Nodes explored {}", nodes_explored);
     return bestMove;
 } 

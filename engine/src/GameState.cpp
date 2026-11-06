@@ -11,6 +11,10 @@ void GameState::switchPlayer() {
 }
 
 bool GameState::makeMove(int index) {
+    if (isTerminal()) {
+        return false;
+    }
+
     if(!board.place(index, currentTurn)) {
         return false;
     }
@@ -63,6 +67,10 @@ Marker GameState::getCurrentTurn() const {
 
 std::vector<int> GameState::legalMoves() const {
     std::vector<int> moves;
+
+    if (isTerminal()) {
+        return moves;
+    }
 
     for(int i = 0; i < 9; i++) {
         if(board.getCell(i) == Marker::Empty) {
