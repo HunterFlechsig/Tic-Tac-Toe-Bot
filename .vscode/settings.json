@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "/home/hunter/Desktop/github/Tic-Tac-Toe-Bot/engine"
+    "cmake.sourceDirectory": "${workspaceFolder}",
+    "python.defaultInterpreterPath": "${workspaceFolder}/experiments/.venv/bin/python"
 }

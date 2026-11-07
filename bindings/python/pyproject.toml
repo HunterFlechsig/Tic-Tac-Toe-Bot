@@ -1,0 +1,17 @@
+[project]
+name = "tictactoe"
+version = "0.1.0"
+description = "Python bindings for the tic-tac-toe engine"
+requires-python = ">=3.14"
+
+[build-system]
+requires = ["scikit-build-core>=0.11", "pybind11>=3.1"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+cmake.build-type = "Release"
+build.targets = ["tictactoe_py"]
+
+[tool.scikit-build.cmake.define]
+TICTACTOE_BUILD_CLI = "OFF"
+TICTACTOE_BUILD_TESTS = "OFF"

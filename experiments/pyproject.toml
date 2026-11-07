@@ -1,0 +1,19 @@
+[project]
+name = "experiments"
+version = "0.1.0"
+description = "Scripts and notebooks that call the tic-tac-toe engine"
+requires-python = ">=3.14"
+dependencies = [
+    "notebook>=7.6.5",
+    "tictactoe",
+]
+
+[project.scripts]
+experiments = "experiments:main"
+
+[build-system]
+requires = ["uv_build>=0.12.11,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+tictactoe = { path = "../bindings/python", editable = true }

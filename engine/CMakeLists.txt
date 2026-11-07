@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
-project(TicTacToe)
+project(TicTacToeEngine)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Game library
 add_library(tictactoe_lib
     src/Board.cpp
     src/Game.cpp
@@ -15,38 +14,42 @@ add_library(tictactoe_lib
 
 target_include_directories(tictactoe_lib PUBLIC include)
 
-# Main executable
-add_executable(tictactoe
-    src/main.cpp
-)
+option(TICTACTOE_BUILD_CLI "Build the tic-tac-toe executable" ON)
+option(TICTACTOE_BUILD_TESTS "Build the C++ tests" ON)
 
-target_link_libraries(tictactoe PRIVATE tictactoe_lib)
+if(TICTACTOE_BUILD_CLI)
+    add_executable(tictactoe
+        src/main.cpp
+    )
 
-# GoogleTest
-include(FetchContent)
+    target_link_libraries(tictactoe PRIVATE tictactoe_lib)
+endif()
 
-FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG v1.17.0
-)
+if(TICTACTOE_BUILD_TESTS)
+    include(FetchContent)
 
-FetchContent_MakeAvailable(googletest)
+    FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG v1.17.0
+    )
 
-# Tests
-enable_testing()
+    FetchContent_MakeAvailable(googletest)
 
-add_executable(tests
-    tests/BoardTest.cpp
-    tests/GameStateTest.cpp
-    tests/PlayerTest.cpp
-)
+    enable_testing()
 
-target_link_libraries(tests
-    PRIVATE
-    tictactoe_lib
-    GTest::gtest_main
-)
+    add_executable(tests
+        tests/BoardTest.cpp
+        tests/GameStateTest.cpp
+        tests/PlayerTest.cpp
+    )
 
-include(GoogleTest)
-gtest_discover_tests(tests)
+    target_link_libraries(tests
+        PRIVATE
+        tictactoe_lib
+        GTest::gtest_main
+    )
+
+    include(GoogleTest)
+    gtest_discover_tests(tests)
+endif()

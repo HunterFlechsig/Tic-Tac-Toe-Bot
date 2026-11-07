@@ -1,0 +1,19 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Flask API in front of the tic-tac-toe engine"
+requires-python = ">=3.14"
+dependencies = [
+    "flask>=3.1.3",
+    "tictactoe",
+]
+
+[project.scripts]
+backend = "backend:main"
+
+[build-system]
+requires = ["uv_build>=0.12.11,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+tictactoe = { path = "../bindings/python", editable = true }

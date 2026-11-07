@@ -1,0 +1,28 @@
+# Run every command from the repository root.
+
+# Engine and tests
+cmake -S . -B build
+cmake --build build
+./build/tictactoe
+ctest --test-dir build --output-on-failure
+
+# Install the extension into the Python environments.
+# Run again after changing the C++ binding.
+uv sync --project backend
+uv sync --project experiments
+
+# Import the installed extension
+uv run --project backend python -c "import tictactoe; print(tictactoe.add(2, 3))"
+
+# Flask API on port 5000
+uv run --project backend backend
+
+# Experiments
+uv run --project experiments experiments
+uv run --project experiments jupyter notebook
+
+# React dev server
+npm --prefix frontend run dev
+
+# Docker images
+docker compose -f deploy/docker-compose.yml up --build

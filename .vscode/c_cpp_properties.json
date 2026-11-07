@@ -2,8 +2,11 @@
     "configurations": [
         {
             "name": "Linux",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/engine/include",
+                "${workspaceFolder}/build/_deps/pybind11-src/include",
+                "/home/hunter/.local/share/uv/python/cpython-3.14.7-linux-x86_64-gnu/include/python3.14"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
