@@ -1,16 +1,18 @@
 #include "Game.hpp"
+#include "Player.hpp"
+
 #include <iostream>
-using namespace std;
 
 int main(int argc, char *argv[]) {
     int i = 0;
     while (i < argc) {
-        cout << "Argument " << i + 1 << ": " << argv[i]
-             << endl;
+        std::cout << "Argument " << i + 1 << ": " << argv[i] << std::endl;
         i++;
     }
 
-    Game game{};
+    MinimaxPlayer x(true, true);
+    HumanPlayer o;
+    Game game(x, o);
     game.run();
     return 0;
 }

@@ -1,8 +1,17 @@
 #include "Game.hpp"
+
 #include <print>
 
-void Game::run() {
-    while(!state.isTerminal()) {
+Game::Game(Player& x, Player& o)
+    : xPlayer(x), oPlayer(o) {
+    xPlayer.setMarker(Marker::X);
+    oPlayer.setMarker(Marker::O);
+}
+
+Result Game::run() {
+    state = GameState{Marker::X};
+
+    while (!state.isTerminal()) {
         state.getBoard().printBoard();
 
         while (true) {
@@ -10,10 +19,10 @@ void Game::run() {
             int move = player.getMove(state);
             std::println("{} places at {}", static_cast<char>(player.getMarker()), move);
 
-            if(!state.makeMove(move)) {
-                std::println("move failed getting another");
+            if (!state.makeMove(move)) {
+                // std::println("move failed getting another");
             } else {
-                std::println("move success");
+                // std::println("move success");
                 break;
             }
         }
@@ -22,15 +31,16 @@ void Game::run() {
     auto winner = state.winner();
     state.getBoard().printBoard();
 
-    if(winner) {
-        std::println("{} Wins!", static_cast<char>(*winner));
+    if (winner) {
+        if(*winner == Marker::X) {
+            return Result::Xwin;
+        }
+        return Result::Owin;
     } else {
-        std::println("Tie!");
+        return Result::Tie;
     }
 }
 
 const Player& Game::currentPlayer() const {
-    return state.getCurrentTurn() == Marker::X
-        ? *players[0]
-        : *players[1];
+    return state.getCurrentTurn() == Marker::X ? xPlayer : oPlayer;
 }

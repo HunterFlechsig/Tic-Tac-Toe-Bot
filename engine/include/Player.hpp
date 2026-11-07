@@ -7,14 +7,18 @@
 
 class Player {
     protected:
-        Marker marker;
+        Marker marker = Marker::Empty;
         static const int inf = 10000000;
         static const int neg_inf = -10000000;
 
     public:
-        explicit Player(Marker marker) : marker(marker) {}
+        Player() = default;
 
         virtual ~Player() = default; // auto destroy unique_ptr
+
+        void setMarker(Marker next) {
+            marker = next;
+        }
 
         Marker getMarker() const {
             return marker;
@@ -25,8 +29,7 @@ class Player {
 
 class HumanPlayer : public Player {
 public:
-    explicit HumanPlayer(Marker marker)
-        : Player(marker) {}
+    HumanPlayer() = default;
 
     int getMove(const GameState& state) const override;
 
@@ -36,8 +39,8 @@ private:
 
 class RandomPlayer : public Player {
 public:
-    explicit RandomPlayer(Marker marker);
-    explicit RandomPlayer(Marker marker, std::uint32_t seed);
+    RandomPlayer();
+    explicit RandomPlayer(std::uint32_t seed);
 
     int getMove(const GameState& state) const override;
 
@@ -51,15 +54,17 @@ public:
     bool prune;
     bool useDepth;
 
-    explicit MinimaxPlayer(Marker marker, bool prune, bool useDepth)
-        : Player(marker), prune(prune), useDepth(useDepth) {}
+    explicit MinimaxPlayer(bool prune, bool useDepth)
+        : prune(prune), useDepth(useDepth) {}
 
     int getMove(const GameState& state) const override;
-    int nodesExplored() const { return nodesExplored_; }
+    std::vector<int> nodesExplored() const { return nodesExplored_; }
+    std::vector<long long> decisionTime() const { return decisionNanos_; }
 
 private:
     int bestMove(const GameState& state) const;
     int minimax(const GameState& state, int alpha, int beta, int& nodes, bool prune,  int depth) const;
 
-    mutable int nodesExplored_ = 0;
+    mutable std::vector<int> nodesExplored_;
+    mutable  std::vector<long long> decisionNanos_;
 };

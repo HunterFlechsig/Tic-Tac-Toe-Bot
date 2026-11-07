@@ -13,6 +13,7 @@ add_library(tictactoe_lib
 )
 
 target_include_directories(tictactoe_lib PUBLIC include)
+set_target_properties(tictactoe_lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 option(TICTACTOE_BUILD_CLI "Build the tic-tac-toe executable" ON)
 option(TICTACTOE_BUILD_TESTS "Build the C++ tests" ON)

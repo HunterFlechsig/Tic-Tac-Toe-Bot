@@ -7,15 +7,16 @@
 #include <vector>
 
 TEST(PlayerTest, PlayerKeepsAssignedMarker) {
-    RandomPlayer player(Marker::X);
+    RandomPlayer player;
+    player.setMarker(Marker::X);
 
     EXPECT_EQ(player.getMarker(), Marker::X);
 }
 
 TEST(PlayerTest, SeededRandomPlayerIsDeterministic) {
     GameState state(Marker::X);
-    RandomPlayer first(Marker::X, 42);
-    RandomPlayer second(Marker::X, 42);
+    RandomPlayer first(42);
+    RandomPlayer second(42);
 
     EXPECT_EQ(first.getMove(state), second.getMove(state));
 }
@@ -33,7 +34,7 @@ TEST(PlayerTest, RandomPlayerReturnsNoMoveWhenNoneAreLegal) {
     ASSERT_TRUE(state.makeMove(2));
     ASSERT_TRUE(state.legalMoves().empty());
 
-    RandomPlayer player(Marker::O, 1);
+    RandomPlayer player(1);
 
     EXPECT_EQ(player.getMove(state), -1);
 }
@@ -53,7 +54,7 @@ TEST(PlayerTest, RandomPlayerReturnsLegalMove) {
     ASSERT_TRUE(state.makeMove(7));
     ASSERT_EQ(state.legalMoves(), (std::vector<int>{6, 8}));
 
-    RandomPlayer player(Marker::O);
+    RandomPlayer player;
     const int move = player.getMove(state);
 
     EXPECT_TRUE(move == 6 || move == 8);
@@ -70,7 +71,8 @@ TEST(PlayerTest, MinimaxTakesImmediateWinningMove) {
     ASSERT_TRUE(state.makeMove(7));
     ASSERT_TRUE(state.makeMove(5));
 
-    MinimaxPlayer minimax(Marker::X, /*prune=*/false, /*useDepth=*/true);
+    MinimaxPlayer minimax(/*prune=*/false, /*useDepth=*/true);
+    minimax.setMarker(Marker::X);
 
     EXPECT_EQ(minimax.getMove(state), 8);
 }
@@ -85,7 +87,8 @@ TEST(PlayerTest, MinimaxBlocksImmediateLoss) {
     ASSERT_TRUE(state.makeMove(3));
     ASSERT_TRUE(state.makeMove(7));
 
-    MinimaxPlayer minimax(Marker::O, /*prune=*/false, /*useDepth=*/true);
+    MinimaxPlayer minimax(/*prune=*/false, /*useDepth=*/true);
+    minimax.setMarker(Marker::O);
 
     EXPECT_EQ(minimax.getMove(state), 8);
 }
@@ -101,7 +104,8 @@ TEST(PlayerTest, MinimaxPrefersImmediateWinOverBlocking) {
     ASSERT_TRUE(state.makeMove(7));
     ASSERT_TRUE(state.makeMove(4));
 
-    MinimaxPlayer minimax(Marker::X, /*prune=*/false, /*useDepth=*/true);
+    MinimaxPlayer minimax(/*prune=*/false, /*useDepth=*/true);
+    minimax.setMarker(Marker::X);
 
     EXPECT_EQ(minimax.getMove(state), 8);
 }
@@ -112,7 +116,8 @@ TEST(PlayerTest, MinimaxChoosesMoveThatAvoidsForcedLoss) {
     // X has taken a corner. The center is the only reply that draws.
     ASSERT_TRUE(state.makeMove(0));
 
-    MinimaxPlayer minimax(Marker::O, /*prune=*/false, /*useDepth=*/true);
+    MinimaxPlayer minimax(/*prune=*/false, /*useDepth=*/true);
+    minimax.setMarker(Marker::O);
 
     EXPECT_EQ(minimax.getMove(state), 4);
 }
@@ -129,7 +134,8 @@ TEST(PlayerTest, MinimaxPrefersFasterWin) {
     ASSERT_TRUE(state.makeMove(4));
     ASSERT_TRUE(state.makeMove(8));
 
-    MinimaxPlayer minimax(Marker::X, /*prune=*/false, /*useDepth=*/true);
+    MinimaxPlayer minimax(/*prune=*/false, /*useDepth=*/true);
+    minimax.setMarker(Marker::X);
 
     EXPECT_EQ(minimax.getMove(state), 5);
 }
@@ -145,8 +151,10 @@ TEST(PlayerTest, AlphaBetaChoosesSameMoveAsMinimax) {
     ASSERT_TRUE(state.makeMove(4));
     ASSERT_TRUE(state.makeMove(8));
 
-    MinimaxPlayer minimax(Marker::X, /*prune=*/false, /*useDepth=*/true);
-    MinimaxPlayer alphaBeta(Marker::X, /*prune=*/true, /*useDepth=*/true);
+    MinimaxPlayer minimax(/*prune=*/false, /*useDepth=*/true);
+    MinimaxPlayer alphaBeta(/*prune=*/true, /*useDepth=*/true);
+    minimax.setMarker(Marker::X);
+    alphaBeta.setMarker(Marker::X);
 
     EXPECT_EQ(alphaBeta.getMove(state), minimax.getMove(state));
 }
@@ -155,8 +163,10 @@ TEST(PlayerTest, AlphaBetaSearchesNoMoreNodesThanMinimax) {
     GameState state(Marker::X);
     ASSERT_TRUE(state.makeMove(0));
 
-    MinimaxPlayer minimax(Marker::O, /*prune=*/false, /*useDepth=*/true);
-    MinimaxPlayer alphaBeta(Marker::O, /*prune=*/true, /*useDepth=*/true);
+    MinimaxPlayer minimax(/*prune=*/false, /*useDepth=*/true);
+    MinimaxPlayer alphaBeta(/*prune=*/true, /*useDepth=*/true);
+    minimax.setMarker(Marker::O);
+    alphaBeta.setMarker(Marker::O);
 
     minimax.getMove(state);
     alphaBeta.getMove(state);
@@ -169,8 +179,10 @@ TEST(PlayerTest, MinimaxDoesNotLoseToRandomPlayer) {
 
     for (unsigned seed : seeds) {
         GameState state(Marker::X);
-        MinimaxPlayer minimax(Marker::X, /*prune=*/true, /*useDepth=*/true);
-        RandomPlayer random(Marker::O, seed);
+        MinimaxPlayer minimax(/*prune=*/true, /*useDepth=*/true);
+        RandomPlayer random(seed);
+        minimax.setMarker(Marker::X);
+        random.setMarker(Marker::O);
 
         int movesPlayed = 0;
         while (!state.isTerminal()) {
@@ -189,8 +201,10 @@ TEST(PlayerTest, MinimaxDoesNotLoseToRandomPlayer) {
 
     for (unsigned seed : seeds) {
         GameState state(Marker::X);
-        RandomPlayer random(Marker::X, seed);
-        MinimaxPlayer minimax(Marker::O, /*prune=*/true, /*useDepth=*/true);
+        RandomPlayer random(seed);
+        MinimaxPlayer minimax(/*prune=*/true, /*useDepth=*/true);
+        random.setMarker(Marker::X);
+        minimax.setMarker(Marker::O);
 
         int movesPlayed = 0;
         while (!state.isTerminal()) {
@@ -210,8 +224,10 @@ TEST(PlayerTest, MinimaxDoesNotLoseToRandomPlayer) {
 
 TEST(PlayerTest, OptimalPlayersEndInDraw) {
     GameState state(Marker::X);
-    MinimaxPlayer playerX(Marker::X, /*prune=*/false, /*useDepth=*/true);
-    MinimaxPlayer playerO(Marker::O, /*prune=*/false, /*useDepth=*/true);
+    MinimaxPlayer playerX(/*prune=*/false, /*useDepth=*/true);
+    MinimaxPlayer playerO(/*prune=*/false, /*useDepth=*/true);
+    playerX.setMarker(Marker::X);
+    playerO.setMarker(Marker::O);
 
     int movesPlayed = 0;
     while (!state.isTerminal()) {

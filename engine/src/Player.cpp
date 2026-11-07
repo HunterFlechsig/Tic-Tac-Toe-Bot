@@ -4,12 +4,13 @@
 #include <limits>
 #include <algorithm>
 #include <print>
+#include <chrono>
 
-RandomPlayer::RandomPlayer(Marker marker)
-    : Player(marker), generator(std::random_device{}()) {}
+RandomPlayer::RandomPlayer()
+    : generator(std::random_device{}()) {}
 
-RandomPlayer::RandomPlayer(Marker marker, std::uint32_t seed)
-    : Player(marker), generator(seed) {}
+RandomPlayer::RandomPlayer(std::uint32_t seed)
+    : generator(seed) {}
 
 int RandomPlayer::getMove(const GameState& state) const {
     auto legal_moves = state.legalMoves();
@@ -48,6 +49,8 @@ int MinimaxPlayer::getMove(const GameState& state) const {
 }
 
 int MinimaxPlayer::bestMove(const GameState& state) const {
+    const auto start = std::chrono::steady_clock::now();
+    
     int bestScore = neg_inf;
     int bestMove = -1;
     int nodes_explored = 0;
@@ -66,8 +69,9 @@ int MinimaxPlayer::bestMove(const GameState& state) const {
         }
     }
 
-    nodesExplored_ = nodes_explored;
-    std::println("Nodes explored {}", nodes_explored);
+    const auto stop = std::chrono::steady_clock::now();
+    decisionNanos_.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count());
+    nodesExplored_.push_back(nodes_explored);
     return bestMove;
 } 
 
