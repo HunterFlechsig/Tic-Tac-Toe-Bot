@@ -12,12 +12,12 @@ Result Game::run() {
     state = GameState{Marker::X};
 
     while (!state.isTerminal()) {
-        state.getBoard().printBoard();
+        // state.getBoard().printBoard();
 
         while (true) {
             const Player& player = currentPlayer();
             int move = player.getMove(state);
-            std::println("{} places at {}", static_cast<char>(player.getMarker()), move);
+            // std::println("{} places at {}", static_cast<char>(player.getMarker()), move);
 
             if (!state.makeMove(move)) {
                 // std::println("move failed getting another");
@@ -29,7 +29,7 @@ Result Game::run() {
     }
 
     auto winner = state.winner();
-    state.getBoard().printBoard();
+    // state.getBoard().printBoard();
 
     if (winner) {
         if(*winner == Marker::X) {

@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "Scripts and notebooks that call the tic-tac-toe engine"
 requires-python = ">=3.14"
 dependencies = [
+    "matplotlib>=3.11.2",
     "notebook>=7.6.5",
+    "pandas>=3.1.1",
     "tictactoe",
 ]
 

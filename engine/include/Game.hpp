@@ -19,6 +19,4 @@ public:
     Game(Player& xPlayer, Player& oPlayer);
     Result run();
     const Player& currentPlayer() const;
-
-
 };
