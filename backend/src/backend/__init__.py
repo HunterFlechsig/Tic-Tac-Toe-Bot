@@ -23,7 +23,7 @@ def game_to_dict(gameId: str) -> dict:
     game = game_manager.get_game(gameId)
     winner = game.winner()
     if not game.isTerminal():
-        status = "In Progress"
+        status = "playing"
     elif winner is None:
         status = "Tie"
     else:
