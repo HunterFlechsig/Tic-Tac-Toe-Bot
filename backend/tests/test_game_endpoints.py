@@ -90,6 +90,23 @@ def test_ai_reply_returns_ai_winner():
     }
 
 
+def test_second_game_does_not_change_the_first_bots_marker():
+    client = app.test_client()
+    o_game = create_game(client, "O")["game_id"]
+    create_game(client, "X")
+    store_position(o_game, [3, 0, 4, 1])
+
+    moved = client.post(f"/game/{o_game}/move", json={"move": 8})
+
+    assert moved.status_code == 200
+    assert moved.get_json() == {
+        "game_id": o_game,
+        "board": ["O", "O", "O", "X", "X", "Empty", "Empty", "Empty", "X"],
+        "current_turn": "X",
+        "status": "O",
+    }
+
+
 def test_filling_move_returns_tie():
     client = app.test_client()
     game_id = create_game(client, "O")["game_id"]
