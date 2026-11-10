@@ -1,4 +1,4 @@
-FROM python:3.14-bookworm AS build
+FROM python:3.14-trixie AS build
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential \
@@ -13,7 +13,7 @@ COPY backend ./backend
 WORKDIR /src/backend
 RUN uv sync --frozen --no-dev --no-editable
 
-FROM python:3.14-slim-bookworm
+FROM python:3.14-slim-trixie
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 WORKDIR /src/backend
