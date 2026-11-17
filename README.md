@@ -2,7 +2,7 @@
 
 A tic-tac-toe opponent whose moves come from a C++ minimax engine. The website, the API tests, and a measurement notebook all call that same library. Nothing in Python or JavaScript reimplements the rules or the search.
 
-**Play it:** [tic-tac-toe-bot-1-waa8.onrender.com](https://tic-tac-toe-bot-1-waa8.onrender.com)
+**Play it:** [tic-tac-toe-bot-rcuo.onrender.com](https://tic-tac-toe-bot-rcuo.onrender.com)
 
 Choose X or O. Choosing O makes the bot move first. The bot searches the rest of the game on every turn. Two copies of it always tie. Against a person, it does not lose.
 
