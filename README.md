@@ -6,14 +6,14 @@ A tic-tac-toe opponent whose moves come from a C++ minimax engine. The website, 
 
 Choose X or O. Choosing O makes the bot move first. The bot searches the rest of the game on every turn. Two copies of it always tie. Against a person, it does not lose.
 
-The host sleeps when idle, so the first visit can take a few seconds to wake.
+The host sleeps when idle, so the first visit can take up to a minute to wake.
 
 ## What this demonstrates
 
 - A C++23 game library with a player interface, so the same loop can run a person, a random baseline, or the search bot.
 - A pybind11 extension that Flask imports directly. The API stores games and translates JSON. It does not own the board logic.
 - A React client that shows your mark immediately, then reveals the bot’s reply. A finished game does not wait on an extra move.
-- Docker images that compile the extension into the API and serve the UI from nginx. nginx proxies `/game` to the API, so the public site is one URL.
+- A public image (`deploy/web.Dockerfile`) that compiles the extension into the API and serves the UI from nginx in the same container. nginx proxies `/game` to the API on localhost, so opening the site starts the bot.
 - Tests on both sides of the binding: GoogleTest for rules and search behavior, pytest for the HTTP API.
 - A notebook that plays 1,000 games per matchup and records nodes visited, decision time, and how fast the bot wins.
 
@@ -43,7 +43,7 @@ C++ engine
 | `backend/` | Flask API and pytest |
 | `frontend/` | React UI |
 | `experiments/` | Jupyter notebook that drives the extension |
-| `deploy/` | Dockerfiles, nginx template, Compose file |
+| `deploy/` | Dockerfiles, nginx template, Compose file, and the single public image |
 
 ## The bot
 
@@ -120,8 +120,10 @@ uv sync --project experiments
 uv run --project experiments jupyter notebook
 ```
 
-Both services in Docker. The UI is on port 8080 and the API is on port 5000.
+Both services in Docker, for a local run. The UI is on port 8080 and the API is on port 5000.
 
 ```bash
 docker compose -f deploy/docker-compose.yml up --build
 ```
+
+The public site is built from `deploy/web.Dockerfile`. That image runs nginx and the API in one container, and nginx proxies `/game` to the API on `127.0.0.1:5000`.
